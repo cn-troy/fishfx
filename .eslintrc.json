@@ -1,0 +1,84 @@
+{
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended"
+  ],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "no-console": 0,
+    "no-debugger": 0,
+    // 字符串定义, 双引号，单引号和反引号都可以使用
+    "quotes": 0,
+    // 不允许尾随逗号
+    "comma-dangle": ["error", "never"],
+    // 关闭换行符检测 \r\n \n都可用.
+    "linebreak-style": 0,
+    // 可以对原生对象原型进行重写
+    "no-extend-native": ["error", {
+      "exceptions": ["Date", "String", "Array", "Number"]
+    }],
+    // 关闭在方法中没有访问this就必须定义为静态方法, 因为vue中的钩子有时不需要访问this
+    "class-methods-use-this": 0,
+    // 成员之间空行, exceptAfterSingleLine: 单行成员之间不需要空行, 多行成员之间必须使用空行.
+    "lines-between-class-members": ["error", "always", {
+      "exceptAfterSingleLine": true
+    }],
+    // 关闭promise在调用reject时只能传递内置Error对象
+    "prefer-promise-reject-errors": 0,
+    // 关闭变量、方法命名的前置下划线检测
+    "no-underscore-dangle": 0,
+    // 关闭if，else，for，while，或do如果只有单行必须由花括号
+    "curly": 0,
+    // 关闭每行代码的长度限制
+    "max-len": 0,
+    // 对象声明时,属性可以换行,也可以不换行
+    "object-curly-newline": 0,
+    // 当箭头函数只有一个参数时可以省略圆括号
+    "arrow-parens": ["error", "as-needed"],
+    // 关闭if，else，for，while，或do如果只有单行时不能换行
+    "nonblock-statement-body-position": 0,
+    // 关闭必须使用驼峰命名法, 由于api生成是使用下划线.
+    "camelcase": 0,
+    // 关闭箭头函数大括号检测
+    "arrow-body-style": 0,
+    // 除了参数名为"descriptor", 不能直接修改参数的值
+    "no-param-reassign": ["error", {
+      "ignorePropertyModificationsFor": ["descriptor"]
+    }],
+    // 取消对象实例化需要大写开头
+    "new-cap": 0,
+    // 取消换行符必须在行的开头
+    "operator-linebreak": 0,
+    // 关闭在声明之前使用的限制
+    "no-use-before-define": 0,
+    // 关闭文件末尾新行检测
+    "eol-last": 0,
+    // 关闭限制使用全局对象
+    "no-restricted-globals": 0,
+    // 关闭必须使用解构赋值的限制
+    "prefer-destructuring": 0,
+    // 关闭不允许使用位运算符的限制
+    "no-bitwise": 0,
+    // 关闭声明变量却不使用的限制
+    "no-unused-vars": 0,
+    // 关闭最大类数量限制
+    "max-classes-per-file": 0,
+    // 关闭末尾分号检测
+    "semi": 0
+  }
+}

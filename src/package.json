@@ -1,0 +1,20 @@
+{
+  "name": "fishfx",
+  "version": "1.1.0",
+  "description": "致力于让 TypeScript 拥有如同编写 C# 般的丝滑。",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cn-troy/fishfx.git"
+  },
+  "keywords": [
+    "typescript",
+    "fishfx",
+    "corefx"
+  ],
+  "author": "Troy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cn-troy/fishfx/issues"
+  },
+  "homepage": "https://github.com/cn-troy/fishfx#readme"
+}
