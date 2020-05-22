@@ -1,7 +1,7 @@
 import { DateTime, TimeSpan } from '../../src/system'
 
 const time1 = new DateTime("2020-4-18 16:40:06.520");
-
+console.log("time1 toString", time1.toString());
 console.log("year", time1.year);
 console.log("month", time1.month);
 console.log("day", time1.day);
@@ -25,7 +25,7 @@ console.log("addMonths", time2.addMonths(2).toString("yyyy-MM-dd HH:mm:ss f"));
 const time3 = new DateTime("2019-12-5 12:12:12");
 console.log("addYear", time3.addYear(2).toString("yyyy-MM-dd HH:mm:ss f"));
 
-const time4 = new DateTime("2020-4-18 16:40:07.520");
+const time4 = new DateTime("2020-4-18 16:40:07.000");
 console.log("time -", (time4 as any) - (time1 as any));
 
 const time5 = new DateTime("2020-1-1 16:40:07.520");

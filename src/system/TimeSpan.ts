@@ -4,7 +4,7 @@ import { TypeInitializationException } from './Exception';
 /**
  * timeSpan表示持续时间。
  */
-export default class timeSpan {
+export default class TimeSpan {
   /**
    * 使用毫秒数(时间戳)进行初始化
    * @param tickes 持续的毫秒数

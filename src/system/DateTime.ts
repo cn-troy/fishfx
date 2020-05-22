@@ -137,11 +137,15 @@ export default class DateTime {
 
 
   /**
+     * 格式化输出字符串（暂时不支持12小时制输出）
+     * @param format 格式化字符串，如：yyyy-MM-dd HH:mm:ss f
+     */
+  toString(format: string): string
+  /**
    * 当使用 >, <, >=, <= 等关系运算符时，js自动调用toString，并使用返回值进行运算
    */
-  toString(format: string): string
   toString(): number
-  toString(format?: string): any {
+  toString(format?: string): string | number {
     if (typeof format === "string") {
       return this._date.f_toString(format);
     } else {
