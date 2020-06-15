@@ -1,5 +1,6 @@
 import "./extensions/String";
 import { FormatException, OverflowException } from "./Exception";
+import { DateTime } from ".";
 export default class Convert {
   /**
    * 将字符串转换为Number类型
@@ -23,7 +24,7 @@ export default class Convert {
    * 将字符串转为Date类型
    * @param value 需要转换的字符串、时间戳
    */
-  public static toDateTime(value: string | number): Date {
+  public static toDate(value: string | number): Date {
     if (typeof value === "number")
       return new Date(value);
 
@@ -31,5 +32,19 @@ export default class Convert {
       throw new FormatException();
 
     return new Date(value);
+  }
+
+  /**
+   * 将字符串转为DateTime类型
+   * @param value 需要转换的字符串、时间戳
+   */
+  public static toDateTime(value: string | number): DateTime {
+    if (typeof value === "number")
+      return new DateTime(value);
+
+    if (!value.f_isDateTime())
+      throw new FormatException();
+
+    return new DateTime(value);
   }
 }

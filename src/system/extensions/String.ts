@@ -12,7 +12,7 @@ declare global {
     f_toUpper(): string;
 
     /** 
-     * 验证字符串是null, undefined, "" */
+     * 验证字符串是 "" 空字符串（由于TS中，string无法为null，所以不需要isNullOrEmpty）*/
     f_isEmpty(): boolean;
 
     /**
