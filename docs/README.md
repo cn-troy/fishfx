@@ -1,4 +1,4 @@
-# Fish Framework（简称：FishFX，中文名：鱼摆摆）
+# Fish Framework（简称：FishFX，中文名：鱼摆摆🐟　）
 `FishFX` 框架是采用 `TypeScript`（version：3.8.3）现有体系标准，同时参考 `CoreFX` ，对平时编码时产出的经验教训，进行易用化、标准化产出的框架。根据团队内部过往经验，使用本框架可以有效的提升使用 `TypeScript` 开发时的工作效率。
 
 ## 核心观念
