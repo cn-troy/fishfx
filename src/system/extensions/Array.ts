@@ -1,8 +1,14 @@
-import { ArgumentException, ArgumentOutOfRangeException } from "../Exception";
+import { ArgumentException, ArgumentOutOfRangeException, IndexOutOfRangeException } from "../Exception";
 import { Dictionary } from "../../collections";
 
 declare global {
   interface Array<T> {
+    /**
+     * 向指定下标处插入元素
+     * @param insertItem 需要插入的元素
+     */
+    f_insert(insertItem: T, index: number): void;
+
     /**
      * 查找数组,返回满足指定条件的第一个元素
      * @param predicate lambda表达式, 表达式必须返回boolean
@@ -145,6 +151,13 @@ declare global {
 const _checkPredicate = function _checkPredicate(predicate: Function) {
   if (typeof predicate !== "function")
     throw new ArgumentException('使用lambda表达式，必须传递表达式。');
+};
+
+Array.prototype.f_insert = function <T>(insertItem: T, index: number) {
+  if (index > this.length)
+    new IndexOutOfRangeException("指定的下标已经超出索引长度");
+
+  this.splice(index, 0, insertItem);
 };
 
 Array.prototype.f_first = function <T>(predicate: (item: T, index: number) => boolean): T | null {

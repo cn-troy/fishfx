@@ -17,3 +17,6 @@
 ## 1.1.1
 * 添加 `Number` 扩展的支持。
 * `Convert` 添加转换为DateTime、Date两种时间类型的支持。
+
+## 1.1.5
+* `Array` 扩展添加 `f_insert`。
