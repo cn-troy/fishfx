@@ -10,7 +10,7 @@ l.insertRange(2, [9, 9, 9])
 
 console.log(arr);
 console.log(l);
-
+const first = l[0];
 // for (let i = 0; i < l.length; i++) {
 //   l.removeAt(i);
 //   console.log("for", l.get(i));

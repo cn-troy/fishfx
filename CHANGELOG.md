@@ -18,11 +18,8 @@
 * 添加 `Number` 扩展的支持。
 * `Convert` 添加转换为DateTime、Date两种时间类型的支持。
 
-## 1.1.2
-* 适配TypeScript 4.X 中关于Number扩展中访问this报错的问题
+## 1.1.5
+* `Array` 扩展添加 `f_insert`。
 
-## 1.1.3
-* 修复Dictionary中import不合理的地方
-
-## 1.1.4
-* 修正 `Dictionary` 中构造函数类型推论错误的情况
+## 1.1.6
+* `Array` 扩展 `f_first`、`f_last` 中表达式如果不传递，则返回第一个或最后一个。

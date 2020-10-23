@@ -1,8 +1,18 @@
-import { ArgumentException, ArgumentOutOfRangeException } from "../Exception";
+import {
+  ArgumentException,
+  ArgumentOutOfRangeException,
+  IndexOutOfRangeException
+} from "../Exception";
 import { Dictionary } from "../../collections";
 
 declare global {
   interface Array<T> {
+    /**
+     * 向指定下标处插入元素
+     * @param insertItem 需要插入的元素
+     */
+    f_insert(insertItem: T, index: number): void;
+
     /**
      * 查找数组,返回满足指定条件的第一个元素
      * @param predicate lambda表达式, 表达式必须返回boolean
@@ -103,7 +113,9 @@ declare global {
      * 根据条件对数组进行分组
      * @param predicate lambda表达式
      */
-    f_groupBy(predicate: (item: T, index: number) => any): Dictionary<string, Array<T>>;
+    f_groupBy(
+      predicate: (item: T, index: number) => any
+    ): Dictionary<string, Array<T>>;
 
     /**
      * 跳过指定数量的元素, 返回剩余元素
@@ -133,21 +145,38 @@ declare global {
      * @param model 目标对象的实例
      * @param predicate lambda表达式
      */
-    f_convert<U>(model: U, predicate?: (item: T, index: number) => any): Array<U>;
+    f_convert<U>(
+      model: U,
+      predicate?: (item: T, index: number) => any
+    ): Array<U>;
 
     /**
      * 排序规则
      */
-    sortRule?: Function
+    sortRule?: Function;
   }
 }
 
 const _checkPredicate = function _checkPredicate(predicate: Function) {
   if (typeof predicate !== "function")
-    throw new ArgumentException('使用lambda表达式，必须传递表达式。');
+    throw new ArgumentException("使用lambda表达式，必须传递表达式。");
 };
 
-Array.prototype.f_first = function <T>(predicate: (item: T, index: number) => boolean): T | null {
+Array.prototype.f_insert = function <T>(insertItem: T, index: number) {
+  if (index > this.length)
+    new IndexOutOfRangeException("指定的下标已经超出索引长度");
+
+  this.splice(index, 0, insertItem);
+};
+
+Array.prototype.f_first = function <T>(
+  predicate: (item: T, index: number) => boolean | null | undefined
+): T | null {
+  if (predicate === null || predicate === undefined) {
+    if (this.length > 0) return this[0];
+    else return null;
+  }
+
   _checkPredicate(predicate);
 
   for (let index = 0, len = this.length; index < len; index += 1) {
@@ -160,7 +189,14 @@ Array.prototype.f_first = function <T>(predicate: (item: T, index: number) => bo
   return null;
 };
 
-Array.prototype.f_last = function <T>(predicate: (item: T, index: number) => boolean): T | null {
+Array.prototype.f_last = function <T>(
+  predicate: (item: T, index: number) => boolean | null | undefined
+): T | null {
+  if (predicate === null || predicate === undefined) {
+    if (this.length > 0) return this[this.length - 1];
+    else return null;
+  }
+
   _checkPredicate(predicate);
   const beginIndex = this.length - 1;
   for (let index = beginIndex; index >= 0; index -= 1) {
@@ -172,7 +208,9 @@ Array.prototype.f_last = function <T>(predicate: (item: T, index: number) => boo
   return null;
 };
 
-Array.prototype.f_all = function <T>(predicate: (item: T, index: number) => boolean): boolean {
+Array.prototype.f_all = function <T>(
+  predicate: (item: T, index: number) => boolean
+): boolean {
   _checkPredicate(predicate);
 
   for (let index = 0, len = this.length; index < len; index += 1) {
@@ -184,7 +222,9 @@ Array.prototype.f_all = function <T>(predicate: (item: T, index: number) => bool
   return true;
 };
 
-Array.prototype.f_any = function <T>(predicate: (item: T, index: number) => boolean): boolean {
+Array.prototype.f_any = function <T>(
+  predicate: (item: T, index: number) => boolean
+): boolean {
   _checkPredicate(predicate);
 
   for (let index = 0, len = this.length; index < len; index += 1) {
@@ -196,7 +236,9 @@ Array.prototype.f_any = function <T>(predicate: (item: T, index: number) => bool
   return false;
 };
 
-Array.prototype.f_where = function <T>(predicate: (item: T, index: number) => boolean): Array<T> {
+Array.prototype.f_where = function <T>(
+  predicate: (item: T, index: number) => boolean
+): Array<T> {
   _checkPredicate(predicate);
 
   const findArray = Array<T>();
@@ -210,7 +252,9 @@ Array.prototype.f_where = function <T>(predicate: (item: T, index: number) => bo
   return findArray;
 };
 
-Array.prototype.f_count = function <T>(predicate: (item: T, index: number) => boolean): number {
+Array.prototype.f_count = function <T>(
+  predicate: (item: T, index: number) => boolean
+): number {
   _checkPredicate(predicate);
 
   let count = 0;
@@ -224,7 +268,9 @@ Array.prototype.f_count = function <T>(predicate: (item: T, index: number) => bo
   return count;
 };
 
-Array.prototype.f_select = function <T>(predicate: (item: T, index: number) => any): Array<any> {
+Array.prototype.f_select = function <T>(
+  predicate: (item: T, index: number) => any
+): Array<any> {
   _checkPredicate(predicate);
 
   const defineArray = new Array<T>();
@@ -236,7 +282,9 @@ Array.prototype.f_select = function <T>(predicate: (item: T, index: number) => a
   return defineArray;
 };
 
-Array.prototype.f_remove = function <T>(predicate: (item: T, index: number) => boolean): number {
+Array.prototype.f_remove = function <T>(
+  predicate: (item: T, index: number) => boolean
+): number {
   _checkPredicate(predicate);
 
   // 这里按倒叙循环，是为了解决删除数组项后索引错乱的问题
@@ -251,7 +299,9 @@ Array.prototype.f_remove = function <T>(predicate: (item: T, index: number) => b
   return removeCount;
 };
 
-Array.prototype.f_sum = function <T>(predicate: (item: T, index: number) => number): number {
+Array.prototype.f_sum = function <T>(
+  predicate: (item: T, index: number) => number
+): number {
   _checkPredicate(predicate);
 
   let sum = 0;
@@ -262,7 +312,9 @@ Array.prototype.f_sum = function <T>(predicate: (item: T, index: number) => numb
   return sum;
 };
 
-Array.prototype.f_avg = function <T>(predicate: (item: T, index: number) => number): number {
+Array.prototype.f_avg = function <T>(
+  predicate: (item: T, index: number) => number
+): number {
   _checkPredicate(predicate);
 
   let average = 0;
@@ -274,7 +326,9 @@ Array.prototype.f_avg = function <T>(predicate: (item: T, index: number) => numb
   return average / this.length;
 };
 
-Array.prototype.f_min = function <T>(predicate?: (item: T, index: number) => number): number {
+Array.prototype.f_min = function <T>(
+  predicate?: (item: T, index: number) => number
+): number {
   if (!predicate) {
     return Math.min.apply(Math, [...this]);
   }
@@ -285,14 +339,15 @@ Array.prototype.f_min = function <T>(predicate?: (item: T, index: number) => num
   for (let index = 0, len = this.length; index < len; index += 1) {
     const element = this[index] as T;
     const excuteValue = predicate(element, index);
-    if (excuteValue < min || Number.isNaN(min))
-      min = excuteValue;
+    if (excuteValue < min || Number.isNaN(min)) min = excuteValue;
   }
 
   return min;
 };
 
-Array.prototype.f_max = function <T>(predicate?: (item: T, index: number) => number): number {
+Array.prototype.f_max = function <T>(
+  predicate?: (item: T, index: number) => number
+): number {
   if (!predicate) {
     return Math.max.apply(Math, [...this]);
   }
@@ -302,14 +357,15 @@ Array.prototype.f_max = function <T>(predicate?: (item: T, index: number) => num
   for (let index = 0, len = this.length; index < len; index += 1) {
     const element = this[index] as T;
     const excuteValue = predicate(element, index);
-    if (excuteValue > max || Number.isNaN(max))
-      max = excuteValue;
+    if (excuteValue > max || Number.isNaN(max)) max = excuteValue;
   }
 
   return max;
 };
 
-Array.prototype.f_orderBy = function <T>(predicate?: (item: T) => any): Array<T> {
+Array.prototype.f_orderBy = function <T>(
+  predicate?: (item: T) => any
+): Array<T> {
   if (!predicate) {
     this.sort();
     return this;
@@ -326,7 +382,9 @@ Array.prototype.f_orderBy = function <T>(predicate?: (item: T) => any): Array<T>
   return this;
 };
 
-Array.prototype.f_orderByDescending = function <T>(predicate?: (item: T) => any): Array<T> {
+Array.prototype.f_orderByDescending = function <T>(
+  predicate?: (item: T) => any
+): Array<T> {
   if (!predicate) {
     this.sort().reverse();
     return this;
@@ -343,10 +401,12 @@ Array.prototype.f_orderByDescending = function <T>(predicate?: (item: T) => any)
   return this;
 };
 
-Array.prototype.f_thenBy = function <T>(predicateB: (item: T) => any): Array<T> {
+Array.prototype.f_thenBy = function <T>(
+  predicateB: (item: T) => any
+): Array<T> {
   _checkPredicate(predicateB);
 
-  const predicateA = this.sortRule === undefined ? () => { } : this.sortRule;
+  const predicateA = this.sortRule === undefined ? () => {} : this.sortRule;
   _checkPredicate(predicateA);
 
   this.sort((a: T, b: T) => {
@@ -362,10 +422,12 @@ Array.prototype.f_thenBy = function <T>(predicateB: (item: T) => any): Array<T> 
   return this;
 };
 
-Array.prototype.f_thenByDescending = function <T>(predicateB: (item: T) => any): Array<T> {
+Array.prototype.f_thenByDescending = function <T>(
+  predicateB: (item: T) => any
+): Array<T> {
   _checkPredicate(predicateB);
 
-  const predicateA = this.sortRule === undefined ? () => { } : this.sortRule;
+  const predicateA = this.sortRule === undefined ? () => {} : this.sortRule;
   _checkPredicate(predicateA);
 
   this.sort((a: T, b: T) => {
@@ -381,7 +443,9 @@ Array.prototype.f_thenByDescending = function <T>(predicateB: (item: T) => any):
   return this;
 };
 
-Array.prototype.f_groupBy = function <T>(predicate: (item: T, index: number) => any) {
+Array.prototype.f_groupBy = function <T>(
+  predicate: (item: T, index: number) => any
+) {
   _checkPredicate(predicate);
 
   const dictionaryObj: Dictionary<string, Array<any>> = new Dictionary();
@@ -401,7 +465,7 @@ Array.prototype.f_groupBy = function <T>(predicate: (item: T, index: number) => 
 
 Array.prototype.f_skip = function <T>(count: number): Array<T> {
   if (count >= this.length) {
-    throw new ArgumentOutOfRangeException('count 超过数组最大长度.');
+    throw new ArgumentOutOfRangeException("count 超过数组最大长度.");
   }
 
   const skipped = new Array<T>();
@@ -415,8 +479,7 @@ Array.prototype.f_skip = function <T>(count: number): Array<T> {
 };
 
 Array.prototype.f_take = function <T>(count: number): Array<T> {
-  if (count >= this.length)
-    return this;
+  if (count >= this.length) return this;
 
   const taken = new Array<T>();
   for (let index = 0, len = this.length; index < len; index += 1) {
@@ -445,7 +508,10 @@ Array.prototype.f_indexOf = function (predicate: Function): number {
   return -1;
 };
 
-Array.prototype.f_convert = function <U>(model: U, predicate?: Function): Array<U> {
+Array.prototype.f_convert = function <U>(
+  model: U,
+  predicate?: Function
+): Array<U> {
   if (predicate) {
     _checkPredicate(predicate);
   }
@@ -458,7 +524,8 @@ Array.prototype.f_convert = function <U>(model: U, predicate?: Function): Array<
     const keys = Object.keys(model);
     keys.forEach(key => {
       if (!Object.prototype.hasOwnProperty.call(convertObj, key)) {
-        convertObj[key] = element[key] === undefined ? (model as any)[key] : element[key];
+        convertObj[key] =
+          element[key] === undefined ? (model as any)[key] : element[key];
       }
     });
     array.push(convertObj);

@@ -1,11 +1,9 @@
-import { Dictionary } from '../../src/collections';
+import { Dictionary } from "../../src/collections";
 
-const l: Dictionary<number, string> = new Dictionary<number, string>(
-  [
-    { key: 1, value: "a" },
-    { key: 2, value: "b" }
-  ]
-);
+const l: Dictionary<number, string> = new Dictionary<number, string>([
+  { key: 1, value: "a" },
+  { key: 2, value: "b" }
+]);
 
 const keys = l.keys;
 
@@ -19,7 +17,7 @@ l.add(3, "c");
 
 const hasValue = l.containsValue("c");
 
-const removed = l.remove(1)
+const removed = l.remove(1);
 
 const got = l.tryGetValue(3);
 
