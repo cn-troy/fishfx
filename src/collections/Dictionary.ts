@@ -1,10 +1,11 @@
 import { InvalidOperationException, ArgumentException } from '../system/Exception';
-import { IDictionary, keyValuePair } from '.';
+import KeyValuePair from './KeyValuePair';
+import IDictionary from './IDictionary';
 
 export { };
 declare global {
   interface Entries<TKey, TValue> {
-    [key: number]: keyValuePair<TKey, TValue>
+    [key: number]: KeyValuePair<TKey, TValue>
   }
 
   interface DictionaryItem<TKey, TValue> {
@@ -21,10 +22,10 @@ export default class Dictionary<TKey, TValue> implements IDictionary<TKey, TValu
   *[Symbol.iterator]() {
     const version = this._version;
 
-    const collection: Array<keyValuePair<TKey, TValue>> = [];
+    const collection: Array<KeyValuePair<TKey, TValue>> = [];
     Object.keys(this._entries).forEach((hash: any) => {
       const entry = this._entries[hash];
-      const pair = new keyValuePair<TKey, TValue>(entry.key, entry.value);
+      const pair = new KeyValuePair<TKey, TValue>(entry.key, entry.value);
       collection.push(pair);
     });
 
@@ -41,12 +42,12 @@ export default class Dictionary<TKey, TValue> implements IDictionary<TKey, TValu
    * 构造函数
    */
   constructor()
-  constructor(collection: Array<keyValuePair<TKey, TValue>>)
+  constructor(collection: Array<KeyValuePair<TKey, TValue>>)
   constructor(collection: Array<DictionaryItem<TKey, TValue>>)
-  constructor(collection?: Array<keyValuePair<TKey, TValue> | DictionaryItem<TKey, TValue>>) {
+  constructor(collection?: Array<KeyValuePair<TKey, TValue> | DictionaryItem<TKey, TValue>>) {
     if (collection === undefined) return;
 
-    collection.forEach(pair => {
+    collection.forEach((pair: KeyValuePair<TKey, TValue> | DictionaryItem<TKey, TValue>) => {
       this.add(pair.key, pair.value);
     });
   }
@@ -112,7 +113,7 @@ export default class Dictionary<TKey, TValue> implements IDictionary<TKey, TValu
       throw new ArgumentException(`已存在具有相同键的项。键：${key}`);
     }
 
-    this._entries[hashCode] = new keyValuePair(key, value);
+    this._entries[hashCode] = new KeyValuePair(key, value);
     this._count++;
     this._version++;
   }
@@ -165,10 +166,10 @@ export default class Dictionary<TKey, TValue> implements IDictionary<TKey, TValu
 
     const version = this._version;
 
-    const collection: Array<keyValuePair<TKey, TValue>> = [];
+    const collection: Array<KeyValuePair<TKey, TValue>> = [];
     Object.keys(this._entries).forEach((hash: any) => {
       const entry = this._entries[hash];
-      const pair = new keyValuePair<TKey, TValue>(entry.key, entry.value);
+      const pair = new KeyValuePair<TKey, TValue>(entry.key, entry.value);
       collection.push(pair);
     });
 
@@ -182,7 +183,7 @@ export default class Dictionary<TKey, TValue> implements IDictionary<TKey, TValu
   }
 
 
-  private _findEntry(key: TKey): keyValuePair<TKey, TValue> | undefined {
+  private _findEntry(key: TKey): KeyValuePair<TKey, TValue> | undefined {
     const hashCode = this._getHashCode(key);
     return this._entries[hashCode];
   }

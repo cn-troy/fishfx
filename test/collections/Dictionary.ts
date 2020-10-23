@@ -28,6 +28,7 @@ for (let item of l) {
   // l.remove(3);
 }
 
+// 模拟异常
 l.forEach((key, value, index) => {
   console.log(key, value, index);
   l.remove(3);

@@ -18,34 +18,34 @@ declare global {
 
 
 Number.prototype.f_toChineseSimplify = function (startNumber: number = 0): string {
-  if (!isFinite(this))
+  if (!isFinite(<number>this))
     return "NaN";
 
-  if (this < startNumber || this < 99) {
+  if (<number>this < startNumber || <number>this < 99) {
     return this.toString();
   }
 
   const resultVals: Array<string> = ['', ''];
   let size: number = 100;
   let bit: number = 2;
-  while ((this / size) >= 1) {
+  while ((<number>this / size) >= 1) {
     size *= 10;
     bit += 1;
   }
 
   if (bit <= 3) {
     resultVals[1] = '百';
-    resultVals[0] = Math.floor(this / 100).toString();
+    resultVals[0] = Math.floor(<number>this / 100).toString();
   } else if (bit <= 4) {
 
     resultVals[1] = '千';
-    resultVals[0] = Math.floor(this / 1000).toString();
+    resultVals[0] = Math.floor(<number>this / 1000).toString();
   } else if (bit <= 8) {
 
     const complateVal = parseInt(`${bit - 4}`, 0) / 3 > 1 ? '千万' : '万';
     const complateBit = complateVal === '万' ? 10000 : 10000000;
     resultVals[1] = complateVal;
-    resultVals[0] = complateVal === '万' ? (this / complateBit).toFixed(1) : parseInt(`${this / complateBit}`, 0).toString();
+    resultVals[0] = complateVal === '万' ? (<number>this / complateBit).toFixed(1) : parseInt(`${<number>this / complateBit}`, 0).toString();
   } else if (bit <= 16) {
 
     let complateVal = (bit - 8) / 3 > 1 ? '千亿' : '亿';
@@ -63,13 +63,13 @@ Number.prototype.f_toChineseSimplify = function (startNumber: number = 0): strin
       complateBit = 1000000000000000;
     }
     resultVals[1] = complateVal;
-    resultVals[0] = parseInt(`${this / complateBit}`, 0).toString();
+    resultVals[0] = parseInt(`${<number>this / complateBit}`, 0).toString();
   }
   return resultVals.join('');
 };
 
 Number.prototype.f_toMoney = function (fixed: number = 2): string {
-  if (!isFinite(this))
+  if (!isFinite(<number>this))
     return "NaN";
 
   const numFixed = this.toFixed(fixed);
@@ -80,5 +80,5 @@ Number.prototype.f_toMoney = function (fixed: number = 2): string {
   }
 
   const reg = /\d{1,3}(?=(\d{3})+$)/g;
-  return (`${this}`).replace(reg, "$&,") + point;
+  return (`${<number>this}`).replace(reg, "$&,") + point;
 }

@@ -1,13 +1,5 @@
-import List from './List';
-import IList from './IList';
-import Dictionary from './Dictionary';
-import IDictionary from './IDictionary';
-import keyValuePair from './KeyValuePair';
+import List from "./List";
+import Dictionary from "./Dictionary";
+import keyValuePair from "./KeyValuePair";
 
-export {
-  List,
-  Dictionary,
-  IList,
-  IDictionary,
-  keyValuePair
-}
+export { List, Dictionary, keyValuePair };
