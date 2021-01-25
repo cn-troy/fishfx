@@ -1,12 +1,21 @@
-import {
-  ArgumentException,
-  ArgumentOutOfRangeException,
-  IndexOutOfRangeException
-} from "../Exception";
+import { ArgumentException, IndexOutOfRangeException } from "../Exception";
 import { Dictionary } from "../../collections";
 
 declare global {
+  interface ArrayConstructor {
+    /**
+     * 检查数组是否包含元素，null、undefined、[]、Number、String、Object等都会返回true
+     * @param arg 需要检查的数组
+     */
+    f_isNullOrEmpty(arg: any): boolean;
+  }
   interface Array<T> {
+    /**
+     * 分页读取数据
+     * @param pageIndex 页码
+     * @param pageSize 每页大小
+     */
+    f_page(pageIndex: number, pageSize: number): Array<T>;
     /**
      * 向指定下标处插入元素
      * @param insertItem 需要插入的元素
@@ -14,16 +23,29 @@ declare global {
     f_insert(insertItem: T, index: number): void;
 
     /**
+     * 向指定下标处插入数组
+     * @param insertItems 需要插入的数组
+     * @param index 插入的下标
+     */
+    f_insertRange(insertItems: Array<T>, index: number): void;
+
+    /**
      * 查找数组,返回满足指定条件的第一个元素
      * @param predicate lambda表达式, 表达式必须返回boolean
      */
-    f_first(predicate: (item: T, index: number) => boolean): T | null;
+    f_first(predicate?: (item: T, index: number) => boolean): T;
+
+    /**
+     * 查找数组,返回满足指定条件的第一个元素
+     * @param predicate lambda表达式, 表达式必须返回boolean
+     */
+    f_firstOrDefault(predicate?: (item: T, index: number) => boolean): T | null;
 
     /**
      * 查找数组,返回满足指定条件的最后一个元素
      * @param predicate lambda表达式, 表达式必须返回boolean
      */
-    f_last(predicate: (item: T, index: number) => boolean): T | null;
+    f_last(predicate?: (item: T, index: number) => boolean): T | null;
 
     /**
      * 检查数组,是否每一项都满足指定条件
@@ -53,7 +75,9 @@ declare global {
      * 枚举每个元素,并重新分配新元素
      * @param predicate lambda表达式
      */
-    f_select(predicate: (item: T, index: number) => any): Array<any>;
+    f_select<TResult>(
+      predicate: (item: T, index: number) => TResult
+    ): Array<TResult>;
 
     /**
      * 检查数组,移除满足指定条件的元素
@@ -141,14 +165,11 @@ declare global {
     f_indexOf(predicate: (item: T, index: number) => boolean): number;
 
     /**
-     * 根据条件对每项数组元素进行转换
-     * @param model 目标对象的实例
-     * @param predicate lambda表达式
+     * 从开始下标后获取指定个数元素
+     * @param startIndex 开始下标, 下标超出将抛出异常
+     * @param count 个数, 当个数超出数组最大长度, 则返回剩余所有数组内容.
      */
-    f_convert<U>(
-      model: U,
-      predicate?: (item: T, index: number) => any
-    ): Array<U>;
+    f_getRange(startIndex: number, count: number): Array<T>;
 
     /**
      * 排序规则
@@ -162,15 +183,45 @@ const _checkPredicate = function _checkPredicate(predicate: Function) {
     throw new ArgumentException("使用lambda表达式，必须传递表达式。");
 };
 
+Array.f_isNullOrEmpty = function (arg: any): boolean {
+  if (!Array.isArray(arg) || arg.length <= 0) return true;
+
+  return false;
+};
+
+Array.prototype.f_page = function <T>(
+  pageIndex: number,
+  pageSize: number
+): Array<T> {
+  return this.f_skip((pageIndex - 1) * pageSize).f_take(pageSize);
+};
+
 Array.prototype.f_insert = function <T>(insertItem: T, index: number) {
-  if (index > this.length)
-    new IndexOutOfRangeException("指定的下标已经超出索引长度");
+  if (index > this.length || index < 0)
+    throw new IndexOutOfRangeException("指定的下标已经超出索引长度");
 
   this.splice(index, 0, insertItem);
 };
 
-Array.prototype.f_first = function <T>(
-  predicate: (item: T, index: number) => boolean | null | undefined
+Array.prototype.f_insertRange = function <T>(
+  insertItems: Array<T>,
+  index: number
+) {
+  if (index > this.length || index < 0)
+    throw new IndexOutOfRangeException("指定的下标已经超出索引长度");
+
+  if (Array.f_isNullOrEmpty(insertItems))
+    throw new ArgumentException("插入的元素必须是Array类型");
+
+  // for (let insertIndex = 0; insertIndex < insertItems.length; insertIndex++) {
+  //   const element = insertItems[insertIndex];
+  //   this.splice(index + insertIndex, 0, element);
+  // }
+  this.splice(index, 0, ...insertItems);
+};
+
+Array.prototype.f_firstOrDefault = function <T>(
+  predicate?: (item: T, index: number) => boolean
 ): T | null {
   if (predicate === null || predicate === undefined) {
     if (this.length > 0) return this[0];
@@ -189,8 +240,28 @@ Array.prototype.f_first = function <T>(
   return null;
 };
 
+Array.prototype.f_first = function <T>(
+  predicate?: (item: T, index: number) => boolean
+): T {
+  if (predicate === null || predicate === undefined) {
+    if (this.length > 0) return this[0];
+    else return {} as T;
+  }
+
+  _checkPredicate(predicate);
+
+  for (let index = 0, len = this.length; index < len; index += 1) {
+    const element = this[index] as T;
+    if (predicate(element, index)) {
+      return element;
+    }
+  }
+
+  return {} as any;
+};
+
 Array.prototype.f_last = function <T>(
-  predicate: (item: T, index: number) => boolean | null | undefined
+  predicate?: (item: T, index: number) => boolean
 ): T | null {
   if (predicate === null || predicate === undefined) {
     if (this.length > 0) return this[this.length - 1];
@@ -268,12 +339,12 @@ Array.prototype.f_count = function <T>(
   return count;
 };
 
-Array.prototype.f_select = function <T>(
-  predicate: (item: T, index: number) => any
-): Array<any> {
+Array.prototype.f_select = function <T, TResult>(
+  predicate: (item: T, index: number) => TResult
+): Array<TResult> {
   _checkPredicate(predicate);
 
-  const defineArray = new Array<T>();
+  const defineArray = new Array<TResult>();
   for (let index = 0, len = this.length; index < len; index += 1) {
     const element = this[index] as T;
     defineArray.push(predicate(element, index));
@@ -366,7 +437,7 @@ Array.prototype.f_max = function <T>(
 Array.prototype.f_orderBy = function <T>(
   predicate?: (item: T) => any
 ): Array<T> {
-  if (!predicate) {
+  if (predicate === null || predicate === undefined) {
     this.sort();
     return this;
   }
@@ -385,7 +456,7 @@ Array.prototype.f_orderBy = function <T>(
 Array.prototype.f_orderByDescending = function <T>(
   predicate?: (item: T) => any
 ): Array<T> {
-  if (!predicate) {
+  if (predicate === null || predicate === undefined) {
     this.sort().reverse();
     return this;
   }
@@ -465,13 +536,14 @@ Array.prototype.f_groupBy = function <T>(
 
 Array.prototype.f_skip = function <T>(count: number): Array<T> {
   if (count >= this.length) {
-    throw new ArgumentOutOfRangeException("count 超过数组最大长度.");
+    return [];
+    // throw new ArgumentOutOfRangeException("count 超过数组最大长度.");
   }
 
   const skipped = new Array<T>();
   for (let index = 0, len = this.length; index < len; index += 1) {
     const element = this[index] as T;
-    if (index > count) {
+    if (index > count - 1) {
       skipped.push(element);
     }
   }
@@ -508,28 +580,17 @@ Array.prototype.f_indexOf = function (predicate: Function): number {
   return -1;
 };
 
-Array.prototype.f_convert = function <U>(
-  model: U,
-  predicate?: Function
-): Array<U> {
-  if (predicate) {
-    _checkPredicate(predicate);
-  }
-
-  const array: Array<U> = [];
-  for (let index = 0, len = this.length; index < len; index += 1) {
-    const element = this[index];
-    const convertObj = predicate ? predicate(element) : {};
-
-    const keys = Object.keys(model);
-    keys.forEach(key => {
-      if (!Object.prototype.hasOwnProperty.call(convertObj, key)) {
-        convertObj[key] =
-          element[key] === undefined ? (model as any)[key] : element[key];
-      }
-    });
-    array.push(convertObj);
-  }
-
-  return array;
+Array.prototype.f_getRange = function <T>(
+  startIndex: number,
+  count: number
+): Array<T> {
+  if (startIndex >= this.length) throw new IndexOutOfRangeException();
+  return this.slice(startIndex, startIndex + count);
+  // for (let index = 0, len = this.length; index < len; index += 1) {
+  //   const element = this[index];
+  //   if (predicate(element)) {
+  //     return index;
+  //   }
+  // }
+  // return -1;
 };
