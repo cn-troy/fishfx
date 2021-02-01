@@ -30,6 +30,18 @@ declare global {
     f_insertRange(insertItems: Array<T>, index: number): void;
 
     /**
+     * 向数组末尾添加元素
+     * @param addItem 需要添加的元素
+     */
+    f_add(addItem: T): void;
+
+    /**
+     * 向数组末尾添加元素
+     * @param addItems 需要添加的数组
+     */
+    f_addRange(addItems: Array<T>): void;
+
+    /**
      * 查找数组,返回满足指定条件的第一个元素
      * @param predicate lambda表达式, 表达式必须返回boolean
      */
@@ -218,6 +230,17 @@ Array.prototype.f_insertRange = function <T>(
   //   this.splice(index + insertIndex, 0, element);
   // }
   this.splice(index, 0, ...insertItems);
+};
+
+Array.prototype.f_add = function <T>(addItem: T) {
+  this.push(addItem);
+};
+
+Array.prototype.f_addRange = function <T>(addItems: Array<T>) {
+  if (Array.f_isNullOrEmpty(addItems))
+    throw new ArgumentException("添加的元素必须是Array类型");
+
+  this.splice(this.length, 0, ...addItems);
 };
 
 Array.prototype.f_firstOrDefault = function <T>(

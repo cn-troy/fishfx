@@ -110,6 +110,11 @@ declare global {
      * 检查字符串是否是日期
      */
     f_isDateTime(): boolean;
+
+    /**
+     * 转换为驼峰命名法
+     */
+    f_toCamelCase(): string;
   }
 }
 
@@ -276,4 +281,9 @@ String.prototype.f_isDateTime = function (): boolean {
 
   const dateTime = new Date(this.toString());
   return dateTime instanceof Date && !isNaN(dateTime.getTime());
+};
+
+String.prototype.f_toCamelCase = function (): string {
+  const firstChar = this.substring(0, 1);
+  return `${firstChar.toLowerCase()}${this.substring(1)}`;
 };

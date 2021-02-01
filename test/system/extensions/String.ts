@@ -68,3 +68,5 @@ console.log("f_isDateTime", !"2020-4-12 12".f_isDateTime());
 console.log("f_isDateTime", !"鱼摆摆".f_isDateTime());
 
 console.log("isNullOrEmpty", String.f_isNullOrEmpty(null));
+
+console.log("f_toCamelCase", "ABC".f_toCamelCase());

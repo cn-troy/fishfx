@@ -34,3 +34,9 @@ console.log("insertRange", range);
 
 console.log("first", range.f_first());
 console.log("firstOrDefault", range.f_firstOrDefault());
+
+range = ["a", "b", "c", "d", "e", "f", "g"];
+range.f_add("1");
+console.log("add", range);
+range.f_addRange(["2", "3", "4"]);
+console.log("addRange", range);

@@ -76,3 +76,11 @@
 - 修复 `Array` 扩展 `f_first`、`f_firstOrDefault`、`f_last` 必须传递表达式的问题。
 - 添加 `Array` 扩展 `f_insertRange` ，向指定下标处插入数组。
 - 移除 `Array` 扩展 `f_convert` 方法，可以使用 `f_select` 替代。
+
+## 1.1.17
+
+- 添加 `String` 扩展 `f_toCamelCase`。
+
+## 1.1.18
+
+- 添加 `Array` 扩展 `f_add`、`f_addRange`。
