@@ -84,3 +84,8 @@
 ## 1.1.18
 
 - 添加 `Array` 扩展 `f_add`、`f_addRange`。
+
+## 1.1.19
+
+- 修改 `Array` 扩展 `f_groupBy` 回值为 `Dictionary<any, Array<T>>`
+- 添加 `Dictionary` 方法 `getValue` 用于在部分无法进行非空断言的场景，如：`template` 模板中。

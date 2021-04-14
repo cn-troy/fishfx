@@ -151,7 +151,7 @@ declare global {
      */
     f_groupBy(
       predicate: (item: T, index: number) => any
-    ): Dictionary<string, Array<T>>;
+    ): Dictionary<any, Array<T>>;
 
     /**
      * 跳过指定数量的元素, 返回剩余元素
@@ -542,7 +542,7 @@ Array.prototype.f_groupBy = function <T>(
 ) {
   _checkPredicate(predicate);
 
-  const dictionaryObj: Dictionary<string, Array<any>> = new Dictionary();
+  const dictionaryObj: Dictionary<any, Array<any>> = new Dictionary();
   for (let index = 0; index < this.length; index += 1) {
     const element = this[index];
     const key = predicate(element, index);

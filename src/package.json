@@ -1,6 +1,6 @@
 {
   "name": "fishfx",
-  "version": "1.1.18",
+  "version": "1.1.19",
   "description": "致力于让 TypeScript 拥有如同编写 C# 般的丝滑。",
   "repository": {
     "type": "git",

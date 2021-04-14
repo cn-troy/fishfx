@@ -1,20 +1,24 @@
-import { InvalidOperationException, ArgumentException } from '../system/Exception';
-import KeyValuePair from './KeyValuePair';
-import IDictionary from './IDictionary';
+import {
+  InvalidOperationException,
+  ArgumentException,
+} from "../system/Exception";
+import KeyValuePair from "./KeyValuePair";
+import IDictionary from "./IDictionary";
 
-export { };
+export {};
 declare global {
   interface Entries<TKey, TValue> {
-    [key: number]: KeyValuePair<TKey, TValue>
+    [key: number]: KeyValuePair<TKey, TValue>;
   }
 
   interface DictionaryItem<TKey, TValue> {
-    key: TKey,
-    value: TValue
+    key: TKey;
+    value: TValue;
   }
 }
 
-export default class Dictionary<TKey, TValue> implements IDictionary<TKey, TValue> {
+export default class Dictionary<TKey, TValue>
+  implements IDictionary<TKey, TValue> {
   private _entries: Entries<TKey, TValue> = {};
   private _count: number = 0;
   private _version: number = 0;
@@ -31,7 +35,9 @@ export default class Dictionary<TKey, TValue> implements IDictionary<TKey, TValu
 
     for (let i = 0; i < collection.length; i++) {
       if (version !== this._version) {
-        throw new InvalidOperationException("字典被修改，枚举操作可能无法执行。");
+        throw new InvalidOperationException(
+          "字典被修改，枚举操作可能无法执行。"
+        );
       }
 
       yield collection[i];
@@ -41,15 +47,21 @@ export default class Dictionary<TKey, TValue> implements IDictionary<TKey, TValu
   /**
    * 构造函数
    */
-  constructor()
-  constructor(collection: Array<KeyValuePair<TKey, TValue>>)
-  constructor(collection: Array<DictionaryItem<TKey, TValue>>)
-  constructor(collection?: Array<KeyValuePair<TKey, TValue> | DictionaryItem<TKey, TValue>>) {
+  constructor();
+  constructor(collection: Array<KeyValuePair<TKey, TValue>>);
+  constructor(collection: Array<DictionaryItem<TKey, TValue>>);
+  constructor(
+    collection?: Array<
+      KeyValuePair<TKey, TValue> | DictionaryItem<TKey, TValue>
+    >
+  ) {
     if (collection === undefined) return;
 
-    collection.forEach((pair: KeyValuePair<TKey, TValue> | DictionaryItem<TKey, TValue>) => {
-      this.add(pair.key, pair.value);
-    });
+    collection.forEach(
+      (pair: KeyValuePair<TKey, TValue> | DictionaryItem<TKey, TValue>) => {
+        this.add(pair.key, pair.value);
+      }
+    );
   }
 
   /**
@@ -86,7 +98,10 @@ export default class Dictionary<TKey, TValue> implements IDictionary<TKey, TValu
    * @param key 键
    */
   public containsKey(key: TKey): boolean {
-    return Object.prototype.hasOwnProperty.call(this._entries, this._getHashCode(key));
+    return Object.prototype.hasOwnProperty.call(
+      this._entries,
+      this._getHashCode(key)
+    );
   }
 
   /**
@@ -96,8 +111,7 @@ export default class Dictionary<TKey, TValue> implements IDictionary<TKey, TValu
   public containsValue(value: TValue): boolean {
     let flag: boolean = false;
     Object.keys(this._entries).forEach((hash: any) => {
-      if (this._entries[hash].value === value)
-        flag = true;
+      if (this._entries[hash].value === value) flag = true;
     });
     return flag;
   }
@@ -157,12 +171,24 @@ export default class Dictionary<TKey, TValue> implements IDictionary<TKey, TValu
   }
 
   /**
+   * 获取与指定的键相关联的值
+   * @param key 键
+   * @returns 值
+   */
+  public getValue(key: TKey): TValue {
+    const entry = this._findEntry(key);
+    return entry.value;
+  }
+
+  /**
    * 遍历Dictionary
    * @param predicate lambda表达式
    */
-  public forEach(predicate: (key: TKey, value: TValue, index: number) => void): void {
+  public forEach(
+    predicate: (key: TKey, value: TValue, index: number) => void
+  ): void {
     if (typeof predicate !== "function")
-      throw new ArgumentException('使用lambda表达式，必须传递表达式。');
+      throw new ArgumentException("使用lambda表达式，必须传递表达式。");
 
     const version = this._version;
 
@@ -175,13 +201,14 @@ export default class Dictionary<TKey, TValue> implements IDictionary<TKey, TValu
 
     for (let i = 0; i < collection.length; i++) {
       if (version !== this._version) {
-        throw new InvalidOperationException("字典被修改，枚举操作可能无法执行。");
+        throw new InvalidOperationException(
+          "字典被修改，枚举操作可能无法执行。"
+        );
       }
 
       predicate(collection[i].key, collection[i].value, i);
     }
   }
-
 
   private _findEntry(key: TKey): KeyValuePair<TKey, TValue> | undefined {
     const hashCode = this._getHashCode(key);
