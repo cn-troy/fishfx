@@ -89,3 +89,7 @@
 
 - 修改 `Array` 扩展 `f_groupBy` 回值为 `Dictionary<any, Array<T>>`
 - 添加 `Dictionary` 方法 `getValue` 用于在部分无法进行非空断言的场景，如：`template` 模板中。
+
+## 1.1.20
+
+- 修复 `Dictionary` 方法 `getValue` 中返回时没有使用非空断言，导致的报错。

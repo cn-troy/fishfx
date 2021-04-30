@@ -177,7 +177,7 @@ export default class Dictionary<TKey, TValue>
    */
   public getValue(key: TKey): TValue {
     const entry = this._findEntry(key);
-    return entry.value;
+    return entry!.value;
   }
 
   /**
