@@ -26,6 +26,12 @@ declare global {
      * @param fixed 小数点后保留位数，默认：2
      */
     f_toMoney(fixed?: number): string;
+
+    /**
+     * 转换为百分比
+     * @param fixed 小数点后保留位数，默认：2
+     */
+    f_toPercent(fixed?: number): string;
   }
 }
 
@@ -48,7 +54,7 @@ Number.f_equals = function (arg: any, equalValue: number): boolean {
 Number.prototype.f_toChineseSimplify = function (
   startNumber: number = 0
 ): string {
-  if (!isFinite(<number>this)) return "NaN";
+  if (!Number.f_hasValue(this)) return "NaN";
 
   if (<number>this < startNumber || <number>this < 99) {
     return this.toString();
@@ -98,7 +104,7 @@ Number.prototype.f_toChineseSimplify = function (
 };
 
 Number.prototype.f_toMoney = function (fixed: number = 2): string {
-  if (!isFinite(<number>this)) return "NaN";
+  if (!Number.f_hasValue(this)) return "NaN";
 
   const numFixed = this.toFixed(fixed);
 
@@ -109,4 +115,11 @@ Number.prototype.f_toMoney = function (fixed: number = 2): string {
 
   const reg = /\d{1,3}(?=(\d{3})+$)/g;
   return `${<number>this}`.replace(reg, "$&,") + point;
+};
+
+Number.prototype.f_toPercent = function (fixed: number = 2): string {
+  if (!Number.f_hasValue(this)) return "NaN";
+
+  const percent = <number>this * 100;
+  return `${percent.toFixed(fixed)}%`;
 };
