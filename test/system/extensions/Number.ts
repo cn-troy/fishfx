@@ -17,3 +17,7 @@ console.log(num4.f_toPercent());
 
 num4 = 0.1111;
 console.log(num4.f_toPercent());
+
+const number5 = 2.5;
+console.log(number5.f_toMoney());
+console.log((1234562.536).f_toMoney());

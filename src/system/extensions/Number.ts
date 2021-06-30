@@ -109,12 +109,16 @@ Number.prototype.f_toMoney = function (fixed: number = 2): string {
   const numFixed = this.toFixed(fixed);
 
   let point = "";
+  let num = "";
   if (numFixed.indexOf(".") > 0) {
-    point = numFixed.substr(numFixed.indexOf("."));
+    point = `.${numFixed.split(".")[1]}`;
+    num = numFixed.split(".")[0];
+    // point = numFixed.substr(numFixed.indexOf("."));
+    // num = numFixed.substr(0, numFixed.indexOf("."))
   }
 
   const reg = /\d{1,3}(?=(\d{3})+$)/g;
-  return `${<number>this}`.replace(reg, "$&,") + point;
+  return num.replace(reg, "$&,") + point;
 };
 
 Number.prototype.f_toPercent = function (fixed: number = 2): string {
